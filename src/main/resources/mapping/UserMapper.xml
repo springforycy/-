@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ycy.yyy.ap.dao.UserMapper">
+    <select id="list" resultMap="UserMap" parameterType="map">
+        SELECT t1.id,`name`,gender,roleName FROM t1 INNER JOIN t2
+        <where>
+            t1.`roleID`=t2.`id`
+            <if test="name != null and name != ''">
+                and name like concat('%',#{name},'%')
+            </if>
+        </where>;
+    </select>
+
+    <resultMap id="UserMap" type="User">
+        <association property="role" javaType="Role">
+            <id column="rid" property="id"></id>
+        </association>
+    </resultMap>
+
+    <delete id="delete" parameterType="String">
+		delete from t1 where id = #{id};
+	</delete>
+
+    <select id="getRole" resultType="map">
+		select * from t2;
+	</select>
+
+    <insert id="save" parameterType="User">
+		insert into t1 values (default,#{name},#{gender},#{role.id});
+	</insert>
+
+    <select id="get" parameterType="String" resultType="User">
+		select  * from t1 where id=#{id}
+	</select>
+
+    <update id="update" parameterType="User">
+		UPDATE t1 SET `name`=#{name},gender=#{gender},roleID=#{role.id} WHERE id= #{id};
+	</update>
+</mapper>
